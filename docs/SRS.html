@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>APSFC Loan Management System — SRS</title>
+<style>
+  @page { size: A4; margin: 14mm 13mm 16mm 13mm; }
+  * { box-sizing: border-box; }
+  body { font-family: "Segoe UI", Calibri, Roboto, sans-serif; color: #141c26; font-size: 10.5pt; line-height: 1.5; margin: 0; }
+  h1 { font-size: 21pt; margin: 0 0 6px; }
+  h2 { font-size: 15pt; color: #0f4c81; border-bottom: 2px solid #0f4c81; padding-bottom: 4px; margin: 0 0 10px; }
+  h2.sec { page-break-before: always; }
+  h3 { font-size: 12.5pt; color: #0f4c81; margin: 18px 0 6px; }
+  p { margin: 6px 0; }
+  code { background: #eef2f8; border-radius: 3px; padding: 1px 4px; font-size: 9pt; font-family: Consolas, monospace; }
+  strong { color: #0a3559; }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 14px; font-size: 8.6pt; }
+  th { background: #0f4c81; color: #fff; text-align: left; padding: 4px 7px; border: 1px solid #0f4c81; }
+  td { border: 1px solid #c9d4e0; padding: 4px 7px; vertical-align: top; }
+  .tbl-wrap { page-break-inside: auto; }
+  tr:nth-child(even) td { background: #f4f8fc; }
+  hr.soft { border: 0; border-top: 1px dotted #b7c5d4; margin: 16px 0; }
+
+  ul, ol { margin: 6px 0 12px; padding-left: 20px; }
+  li { margin: 3px 0; }
+  .code-blk { background: #0d1f33; color: #e6edf5; border-radius: 6px; padding: 10px 14px; font-family: Consolas, monospace; font-size: 8.2pt; white-space: pre-wrap; margin: 8px 0; }
+  .code-lang { color: #7fd4e8; font-weight: bold; }
+  .code-diag { background: #fff; border: 1px solid #c9d4e0; border-radius: 6px; padding: 12px; font-family: Consolas, monospace; font-size: 8pt; white-space: pre; overflow-x: hidden; }
+
+  /* cover */
+  .cover { text-align: center; padding-top: 130px; }
+  .cover h1 { font-size: 30pt; color: #0f4c81; }
+  .cover .sub { font-size: 14pt; color: #0a3559; margin-bottom: 40px; }
+  .cover .logo { display: inline-block; background: #0f4c81; color: #fff; font-weight: 800; font-size: 22pt; letter-spacing: 2px; padding: 10px 26px; border-radius: 10px; margin-bottom: 26px; }
+  .cover .meta { display: inline-block; text-align: left; border: 1px solid #c9d4e0; border-radius: 8px; padding: 16px 24px; font-size: 10.5pt; margin-top: 30px; }
+  .cover .meta td { border: 0; padding: 2px 8px; font-size: 10pt; }
+  .toc { page-break-before: always; }
+  .toc a { text-decoration: none; color: #141c26; }
+
+  /* diagrams */
+  .uc-wrap { border: 1.5px dashed #0f4c81; border-radius: 10px; padding: 0; margin: 12px 0; overflow: hidden; }
+  .uc-side { border-right: 1px dashed #9bb3c8; }
+  .uc-sys { flex: 1; padding: 0 14px 10px; }
+  .uc-systitle { text-align: center; background: #0f4c81; color: #fff; font-weight: 700; letter-spacing: .5px; padding: 6px; margin: 0 -14px 10px; }
+  .uc-row { display: flex; align-items: stretch; border-bottom: 1px solid #e2e9f1; padding: 8px 0; }
+  .uc-row:last-child { border-bottom: 0; }
+  .uc-actor { width: 120px; font-weight: 800; color: #0a3559; font-size: 9pt; padding-top: 4px; }
+  .uc-pills { flex: 1; display: flex; flex-wrap: wrap; gap: 4px; }
+  .uc-pill { background: #e7eef7; border: 1px solid #b8cee4; color: #0a3559; border-radius: 999px; padding: 2px 9px; font-size: 8pt; }
+
+  .arch-wrap { display: flex; gap: 14px; margin: 12px 0; }
+  .arch-main { flex: 1.15; }
+  .arch-tier { border: 1px solid #0f4c81; border-radius: 8px; padding: 8px 12px; margin-bottom: 2px; }
+  .arch-tiername { font-weight: 800; color: #0f4c81; font-size: 10pt; }
+  .arch-tierdesc { font-size: 8.6pt; color: #4a5a6b; }
+  .arch-chips { margin-top: 5px; }
+  .chip { display: inline-block; background: #e7eef7; border: 1px solid #b8cee4; border-radius: 5px; padding: 1px 7px; font-size: 7.8pt; margin: 1px 2px 1px 0; }
+  .arch-arrow { text-align: center; color: #0f4c81; font-weight: 600; font-size: 8.6pt; padding: 1px 0; }
+  .arch-sec { flex: 0.85; border: 1px dashed #5a7a99; border-radius: 8px; padding: 10px 12px; align-self: start; }
+  .arch-sec-title { font-weight: 800; color: #0a3559; margin-bottom: 8px; }
+  .arch-pill { background: #f2f7fc; border: 1px solid #c8d9e9; border-radius: 6px; padding: 5px 8px; font-size: 8.4pt; margin-bottom: 5px; }
+
+  .seq-wrap { border: 1px solid #c9d4e0; border-radius: 8px; padding: 10px 14px; margin: 12px 0; }
+  .seq-row { display: flex; align-items: center; gap: 10px; }
+  .seq-who { width: 150px; font-weight: 700; color: #0a3559; background: #eef2f8; border-radius: 5px; padding: 3px 8px; font-size: 8.6pt; }
+  .seq-arrow { width: 18px; text-align: center; color: #0f4c81; }
+  .seq-what { flex: 1; font-size: 8.6pt; color: #2b3a49; }
+  .fig-note { font-size: 8.4pt; color: #40536a; background: #f2f7fc; border-left: 3px solid #0f4c81; padding: 5px 9px; border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="logo">APSFC</div>
+  <h1>Loan Management System</h1>
+  <div class="sub">Software Requirements Specification (SRS)</div>
+  <div class="meta">
+    <table>
+      <tr><td><strong>Version</strong></td><td>1.0 — Approved</td></tr>
+      <tr><td><strong>Prepared by</strong></td><td>Senior Software Engineer</td></tr>
+      <tr><td><strong>Date</strong></td><td>18-Sep-2026</td></tr>
+      <tr><td><strong>Includes</strong></td><td>Requirement analysis · Use cases · Architecture · RBAC</td></tr>
+    </table>
+  </div>
+</div>
+
+<noscript><p style="color:#c0392b">JavaScript required for diagram rendering.</p></noscript>
+
+<h1 id="software-requirements-specification">Software Requirements Specification (SRS)</h1>
+<h2 id="apsfc-land-development-bank-loan-management-system" class="sec">APSFC Land Development Bank — Loan Management System</h2>
+<div class="tbl-wrap"><table><tr><th>Item</th><th>Detail</th></tr><tr><td><strong>Document Title</strong></td><td>Software Requirements Specification — APSFC Loan Management System</td></tr><tr><td><strong>Version</strong></td><td>1.0</td></tr><tr><td><strong>Status</strong></td><td>Approved (implemented & verified end-to-end)</td></tr><tr><td><strong>Prepared by</strong></td><td>Senior Software Engineer</td></tr><tr><td><strong>Date</strong></td><td>18-Sep-2026</td></tr><tr><td><strong>Compliance</strong></td><td>IEEE 830-style structure; IEEE 29148 / ISO/IEC/IEEE 12207 concepts applied</td></tr></table></div>
+<hr class="soft">
+<h2 id="table-of-contents" class="sec">Table of Contents</h2>
+<ol>
+<li>1</li>
+<li>[Overall Description](#2-overall-description)</li>
+<li>[Functional Requirements & Use Cases](#3-functional-requirements--use-cases)</li>
+<li>[Use Case Specifications](#4-use-case-specifications)</li>
+<li>[Non-Functional Requirements](#5-non-functional-requirements)</li>
+<li>[Business Rules](#6-business-rules)</li>
+<li>[Data Requirements](#7-data-requirements)</li>
+<li>[Security & Role-Based Access Control](#8-security--role-based-access-control)</li>
+<li>[API Requirements](#9-api-requirements)</li>
+<li>[Frontend / UI Requirements](#10-frontend--ui-requirements)</li>
+<li>[Acceptance & Verification](#11-acceptance--verification)</li>
+<li>[Appendix](#12-appendix)</li>
+</ol>
+<hr class="soft">
+<h2 id="1-introduction" class="sec">1. Introduction</h2>
+<h3 id="1-1-purpose">1.1 Purpose</h3>
+<p>The purpose of this document is to define the complete functional and non-functional requirements of the <strong>APSFC Loan Management System</strong> — a web application that automates the <strong>loan origination and servicing lifecycle</strong>: from a customer applying for a loan, through staff verification, manager approval/disbursement, EMI scheduling, collections and loan closure — with a <strong>role-based access control</strong> (RBAC) model, full <strong>audit trail</strong>, and <strong>portfolio reporting</strong>.</p>
+<h3 id="1-2-scope">1.2 Scope</h3>
+<p><strong>In scope:</strong></p>
+<ul>
+<li>Customer self-registration and KYC profile management</li>
+<li>Configurable loan product catalogue</li>
+<li>Loan application workflow with formal state machine (<code>DRAFT → SUBMITTED → UNDER_REVIEW → APPROVED/REJECTED → DISBURSED/CANCELLED</code>)</li>
+<li>Loan disbursement with auto-generated amortization (EMI) schedule</li>
+<li>Installment-wise repayment processing with strict in-order settlement and auto loan closure</li>
+<li>Staff administration (employees), customer lifecycle (activate/deactivate, KYC verification)</li>
+<li>Executive dashboard and reports (portfolio, upcoming/overdue EMIs, collections)</li>
+<li>JWT-based authentication and method-level RBAC</li>
+<li>Responsive single-page web frontend</li>
+</ul>
+<p><strong>Out of scope (future):</strong></p>
+<ul>
+<li>Payment gateway integration, document upload, credit-score integration, notifications via SMS/email, penalty/late-fee engine, RBI reporting exports.</li>
+</ul>
+<h3 id="1-3-definitions-acronyms-abbreviations">1.3 Definitions, Acronyms &amp; Abbreviations</h3>
+<div class="tbl-wrap"><table><tr><th>Term</th><th>Meaning</th></tr><tr><td>APSFC</td><td>Andhra Pradesh State Financial Corporation</td></tr><tr><td>SRS</td><td>Software Requirements Specification</td></tr><tr><td>KYC</td><td>Know Your Customer</td></tr><tr><td>EMI</td><td>Equated Monthly Installment</td></tr><tr><td>RBAC</td><td>Role-Based Access Control</td></tr><tr><td>JWT</td><td>JSON Web Token</td></tr><tr><td>JPA</td><td>Jakarta Persistence API</td></tr><tr><td>MGR</td><td>Manager</td></tr><tr><td>OFF</td><td>Loan Officer</td></tr><tr><td>ADM</td><td>Administrator</td></tr><tr><td>CUST</td><td>Customer</td></tr></table></div>
+<h3 id="1-4-references">1.4 References</h3>
+<ul>
+<li>IEEE Std 830-1998 — IEEE Recommended Practice for SRS</li>
+<li>ISO/IEC/IEEE 29148:2018 — Requirements engineering</li>
+<li>Market-standard loan money-math: <strong>Reducing Balance Amortization</strong></li>
+</ul>
+<h3 id="1-5-intended-audience">1.5 Intended Audience</h3>
+<p>Business analysts, developers, testers, DevOps, and interviewees presenting the system.</p>
+<hr class="soft">
+<h2 id="2-overall-description" class="sec">2. Overall Description</h2>
+<h3 id="2-1-product-perspective">2.1 Product Perspective</h3>
+<p>Standalone web application consisting of:</p>
+<ol>
+<li>1</li>
+<li><strong>Frontend</strong> — Vanilla HTML/CSS/JS SPA (hash router), served from <code>:5500</code>, consuming REST APIs at <code>:8080</code> (CORS-enabled).</li>
+</ol>
+<h3 id="2-2-product-functions">2.2 Product Functions (Summary)</h3>
+<div class="tbl-wrap"><table><tr><th>#</th><th>Function</th><th>Primary Actors</th></tr><tr><td>F1</td><td>Customer self-registration (creates User + KYC)</td><td>CUST</td></tr><tr><td>F2</td><td>Authentication & profile (<code>login</code>, <code>/me</code>, JWT issuance)</td><td>all</td></tr><tr><td>F3</td><td>Loan product catalogue (create/view/update)</td><td>ADM (manage), all (view)</td></tr><tr><td>F4</td><td>Loan application lifecycle (create/submit/edit/cancel/history)</td><td>CUST</td></tr><tr><td>F5</td><td>Loan application review (start review / recommend / approve / reject)</td><td>OFF, MGR</td></tr><tr><td>F6</td><td>Loan disbursement + EMI schedule generation</td><td>MGR</td></tr><tr><td>F7</td><td>Repayment recording (next unpaid EMI only) & history</td><td>CUST, staff</td></tr><tr><td>F8</td><td>Customer management (list/search, status, KYC verify)</td><td>OFF, MGR, ADM</td></tr><tr><td>F9</td><td>Employee administration (provision/update/status)</td><td>ADM</td></tr><tr><td>F10</td><td>Dashboard summary & portfolio reports</td><td>staff</td></tr></table></div>
+<h3 id="2-3-user-classes-roles">2.3 User Classes &amp; Roles</h3>
+<div class="tbl-wrap"><table><tr><th>Role</th><th>Description</th><th>Sample</th></tr><tr><td><strong>CUSTOMER</strong></td><td>Registers online; applies, edits drafts, submits, cancels, views own applications/loans/EMIs/payments, records own repayments</td><td>Borrowers</td></tr><tr><td><strong>LOAN_OFFICER</strong></td><td>Verification & review queue; advisory recommend; views customers, loans, repayments, reports</td><td>Operations staff</td></tr><tr><td><strong>MANAGER</strong></td><td>Final approval/rejection, disbursement, customer status/KYC actions</td><td>Branch/sanctioning authority</td></tr><tr><td><strong>ADMIN</strong></td><td>Full read visibility; product and employee administration; customer actions</td><td>IT/super admin</td></tr></table></div>
+<p>> Every user has <strong>exactly one role</strong> (<code>Role</code> enum: <code>CUSTOMER</code>, <code>LOAN_OFFICER</code>, <code>MANAGER</code>, <code>ADMIN</code>).</p>
+<h3 id="2-4-operating-environment">2.4 Operating Environment</h3>
+<div class="tbl-wrap"><table><tr><th>Component</th><th>Specification</th></tr><tr><td>Runtime (backend)</td><td>Java 17+ (JDK 24.0.1 verified), Spring Boot 3.5.16</td></tr><tr><td>Database</td><td>MySQL 8.0.43, schema <code>apsfc_lms</code>, user <code>apsfc_user</code></td></tr><tr><td>Build</td><td>Maven 3.9.16</td></tr><tr><td>Frontend</td><td>Any modern browser (Chrome/Edge/Firefox)</td></tr><tr><td>Ports</td><td>Dev API <code>8080</code>, SPA <code>5500</code></td></tr></table></div>
+<h3 id="2-5-design-implementation-constraints">2.5 Design &amp; Implementation Constraints</h3>
+<ul>
+<li><strong>Money</strong> must use <code>BigDecimal</code> (<code>DECIMAL(19,2)</code>, <code>HALF_EVEN</code> rounding) — never <code>double</code>.</li>
+<li>All application-status changes <strong>must</strong> pass through <code>ApplicationStateMachine</code>.</li>
+<li>DB schema is managed by <strong>Flyway migrations</strong> (<code>V1…V12</code>); <code>ddl-auto: validate</code>.</li>
+<li>No framework on the frontend; all HTTP via a thin <code>fetch</code> wrapper.</li>
+<li>Restrictive method-level authorization (<code>@PreAuthorize</code>) layered with service-level ownership checks.</li>
+</ul>
+<h3 id="2-6-assumptions-dependencies">2.6 Assumptions &amp; Dependencies</h3>
+<ul>
+<li>Single-role users; one loan product selected per application; flat (fixed) interest rate at application time.</li>
+<li>Repayment applies to the *next unpaid installment only* (overpayment is rejected, not credited).</li>
+<li>Manager decisions and disbursements are synchronous HTTP operations (no async queue).</li>
+</ul>
+<hr class="soft">
+<h3 id="2-7-project-architecture">2.7 Project Architecture (Detailed)</h3>
+<h3 id="2-7-1-architecture-overview">2.7.1 Architecture Overview</h3>
+<p>The system is a <strong>three-tier application</strong>: a static single-page frontend, a RESTful Spring Boot backend, and a relational database — separated so the API layer is fully reusable (mobile clients, integrations) and the presentation tier stays independently deployable.</p>
+
+    <div class="arch-wrap">
+        <div class="arch-main">
+            
+        <div class="arch-tier">
+            <div class="arch-tiername">Presentation Tier — :5500</div>
+            <div class="arch-tierdesc">Static SPA (no build step)</div>
+            <div class="arch-chips"><span class="chip">index.html</span><span class="chip">app.html</span><span class="chip">views.js</span><span class="chip">app.js (hash router)</span><span class="chip">api.js (fetch client)</span><span class="chip">style.css</span></div>
+        </div>
+            <div class="arch-arrow">&#8595;&nbsp;JSON / Bearer token</div>
+            
+        <div class="arch-tier">
+            <div class="arch-tiername">Application Tier — :8080</div>
+            <div class="arch-tierdesc">Spring Boot 3.5 · REST API</div>
+            <div class="arch-chips"><span class="chip">Controllers + DTO records</span><span class="chip">Service layer (business rules)</span><span class="chip">Repositories (JPA / Specifications / JPQL)</span><span class="chip">Flyway V1..V12</span></div>
+        </div>
+            <div class="arch-arrow">&#8595;&nbsp;JSON / Bearer token</div>
+            
+        <div class="arch-tier">
+            <div class="arch-tiername">Data Tier</div>
+            <div class="arch-tierdesc">MySQL 8.0 — apsfc_lms</div>
+            <div class="arch-chips"><span class="chip">Users / Customers / Employees</span><span class="chip">Products / Applications / Loans</span><span class="chip">EmiSchedule / Repayments</span><span class="chip">ApplicationHistory (audit)</span></div>
+        </div>
+        </div>
+        <div class="arch-sec">
+            <div class="arch-sec-title">Security (cross-cutting)</div>
+            <div class="arch-pill">JWT filter → SecurityContext</div>
+            <div class="arch-pill">@PreAuthorize (role gate)</div>
+            <div class="arch-pill">Service-level ownership checks</div>
+            <div class="arch-pill">@RestControllerAdvice error envelope</div>
+            <div class="arch-pill">BCrypt + .env secrets + CORS allowlist</div>
+        </div>
+    </div>
+<h3 id="2-7-2-layered-architecture">2.7.2 Layered Architecture</h3>
+<div class="tbl-wrap"><table><tr><th>Layer</th><th>Contents</th><th>Responsibility</th><th>Example</th></tr><tr><td><strong>Presentation</strong></td><td><code>index.html</code>, <code>app.html</code>, <code>views.js</code>, <code>app.js</code>, <code>common.js</code>, <code>api.js</code></td><td>Rendering, routing, forms, toasts</td><td><code>Views['loan-detail']</code>, <code>router.route()</code></td></tr><tr><td><strong>API / Controller</strong></td><td><code>@RestController</code>s + record DTOs</td><td>HTTP mapping, validation triggers, role gates</td><td><code>LoanApplicationController</code>, <code>PreAuthorize</code></td></tr><tr><td><strong>Service</strong></td><td><code>AuthService</code>, <code>LoanApplicationService</code>, <code>LoanService</code>, <code>RepaymentService</code>, <code>DashboardService</code>, <code>CustomerService</code>, <code>EmployeeService</code>, <code>LoanProductService</code> + <code>Impl</code></td><td>Orchestration, business rules, transactions, ownership checks</td><td><code>disburse()</code>, <code>record()</code> (next-EMI policy)</td></tr><tr><td><strong>Repository</strong></td><td>Spring Data JPA interfaces + <code>Specification</code>s</td><td>Persistence, dynamic filters, JPQL aggregates</td><td><code>LoanRepository.portfolioByStatus()</code></td></tr><tr><td><strong>Domain</strong></td><td>JPA entities + enums</td><td>Data model & invariants</td><td><code>LoanApplication</code>, <code>EmiSchedule</code></td></tr><tr><td><strong>Infra / Cross-cut</strong></td><td><code>SecurityConfig</code>, JWT filter, <code>@RestControllerAdvice</code> (GlobalExceptionHandler), Flyway, <code>ApplicationStateMachine</code>, <code>AmortizationScheduleGenerator</code>, <code>PageableUtil</code>, <code>SecurityUtil</code>, <code>ReferenceNumberGenerator</code></td><td>Security, error mapping, schema control, shared logic</td><td>exception → <code>{errorCode, message}</code> envelope</td></tr></table></div>
+<h3 id="2-7-3-request-flow">2.7.3 Request Flow (end-to-end)</h3>
+<div class="seq-wrap">
+        <div class="seq-row">
+            <div class="seq-who">Client (SPA)</div>
+            <div class="seq-arrow">&#8595;</div>
+            <div class="seq-what">Send HTTP + Authorization: Bearer &lt;jwt&gt;</div>
+        </div>
+        <div class="seq-row">
+            <div class="seq-who">Security Filter Chain</div>
+            <div class="seq-arrow">&#8595;</div>
+            <div class="seq-what">Parse JWT → SecurityContextHolder (role)</div>
+        </div>
+        <div class="seq-row">
+            <div class="seq-who">DispatcherServlet</div>
+            <div class="seq-arrow">&#8595;</div>
+            <div class="seq-what">Route to controller</div>
+        </div>
+        <div class="seq-row">
+            <div class="seq-who">Controller</div>
+            <div class="seq-arrow">&#8595;</div>
+            <div class="seq-what">@Valid (400 on field errors) → @PreAuthorize (403)</div>
+        </div>
+        <div class="seq-row">
+            <div class="seq-who">Service</div>
+            <div class="seq-arrow">&#8595;</div>
+            <div class="seq-what">Business rules · precondition guards · @Transactional</div>
+        </div>
+        <div class="seq-row">
+            <div class="seq-who">Repository</div>
+            <div class="seq-arrow">&#8595;</div>
+            <div class="seq-what">JPA / Specification / JPQL -> MySQL</div>
+        </div>
+        <div class="seq-row">
+            <div class="seq-who">MySQL</div>
+            <div class="seq-arrow">&#8595;</div>
+            <div class="seq-what">Return rows (ACID commit)</div>
+        </div>
+        <div class="seq-row">
+            <div class="seq-who">Service </div>
+            <div class="seq-arrow">&#8595;</div>
+            <div class="seq-what">Map entities → response DTOs</div>
+        </div>
+        <div class="seq-row">
+            <div class="seq-who">Controller </div>
+            <div class="seq-arrow">&#8595;</div>
+            <div class="seq-what">ResponseEntity 200 / 201 / 4xx</div>
+        </div>
+        <div class="seq-row">
+            <div class="seq-who">Client (SPA)</div>
+            <div class="seq-arrow"></div>
+            <div class="seq-what">Render view / error toast</div>
+        </div></div>
+        <p class="fig-note"><strong>Guard order:</strong> @Valid → @PreAuthorize → precondition rules (400 <code>BUSINESS_VIOLATION</code>) → state machine (409 <code>INVALID_STATE_TRANSITION</code>).</p>
+<p><strong>Guard order:</strong> bean validation (400) → method security <code>@PreAuthorize</code> (403) → controller → service precondition checks (<code>BUSINESS_VIOLATION</code>, 400) → state machine (<code>INVALID_STATE_TRANSITION</code>, 409).</p>
+<h3 id="2-7-4-frontend-architecture">2.7.4 Frontend Architecture</h3>
+<div class="tbl-wrap"><table><tr><th>Concern</th><th>Mechanism</th></tr><tr><td>Routing</td><td>Hash-based (<code>#/route/params</code>); <code>router.route()</code> parses <code>view</code> + <code>:id</code> + <code>?query</code>, applies role gates, renders View, re-executes inline scripts</td></tr><tr><td>State</td><td><code>localStorage</code> — <code>apsfc_token</code> (JWT), <code>apsfc_user</code> (profile); <code>ace</code> client object wraps fetch + retry/401 handling</td></tr><tr><td>Rendering</td><td>Template-literal views → injected into <code>#view</code>; script blocks re-created via <code>document.createElement</code> for dynamic forms</td></tr><tr><td>RBAC UI</td><td><code>NAV[role]</code> builds sidebar; unauthorized route → toast + redirect home</td></tr><tr><td>Styling</td><td>Single <code>style.css</code> design system: stat cards, tables, badges, timeline, modals, toasts; <code>.row</code> grid auto-flows columns</td></tr></table></div>
+<h3 id="2-7-5-security-architecture">2.7.5 Security Architecture</h3>
+<ol>
+<li>1</li>
+<li><strong>Request security</strong> — <code>OncePerRequestFilter</code> parses bearer token → <code>UsernamePasswordAuthenticationToken(role)</code> → <code>SecurityContextHolder</code>; stateless (no HTTP session).</li>
+<li><strong>Authorization (3 layers)</strong></li>
+</ol>
+<p>   - <strong>URL security</strong> (<code>SecurityConfig</code>) — permit public auth endpoints; everything else authenticated.<br>   - <strong>Method security</strong> (<code>@EnableMethodSecurity</code>) — <code>@PreAuthorize("hasRole('...')")</code> per endpoint (coarse role gate).<br>   - <strong>Service-level</strong> — ownership & state checks (fine-grained): e.g., customer may only read own applications/loans; only drafts may be edited; next-EMI-only repayment.</p>
+<ol>
+<li>4</li>
+<li><strong>CORS</strong> — allowlist <code>http://localhost:5500</code>, <code>http://127.0.0.1:5500</code>.</li>
+</ol>
+<h3 id="2-7-6-data-architecture">2.7.6 Data Architecture</h3>
+<pre class="code-blk"><span class="code-lang"></span>
+┌ User ────────────────┐        ┌ Customer (KYC) ────────┐
+│ id, username, email, │ 1—1    │ aadhaar, pan, dob,     │
+│ passwordHash, role,  ├───────►│ employment, address,   │
+│ status, fullName     │        │ kycVerified            │
+└──────────────────────┘        └────────────────────────┘
+┌ Employee ────────────┐        ┌ LoanProduct ───────────┐
+│ id, code, dept,      │        │ min/max amount/tenure, │
+│ designation,         │        │ interestRate, status   │
+│ joiningDate          │        └───────────┬────────────┘
+└──────────┬───────────┘                    │
+           └─ User 1—1                      │
+┌ LoanApplication ─────┐  N—1  ┌────────────┴────────────┐
+│ appNo, amount,       ├──────►│ Loan: loanNo, principal,│
+│ tenure, purpose,     │ 1—1   │ EMI, outstanding, total,│
+│ status (state SMM)   │──────►│ status, closedAt        │
+└───────────┬──────────┘       └────────────┬────────────┘
+            │ N—1 (history)                 │ N—1 (schedule)
+   ┌────────▼──────────┐          ┌─────────▼─────────────┐
+   │ ApplicationHistory│          │ EmiSchedule: dueDate, │
+   │ from→to, actor,   │          │ principal/interest,   │
+   │ comment, at       │          │ paid, paymentStatus   │
+   └───────────────────┘          └─────────┬─────────────┘
+                                            │ N—1 (payments)
+                                  ┌─────────▼─────────────┐
+                                  │ Repayment: amount,    │
+                                  │ mode, ref, date, by   │
+                                  └───────────────────────┘</pre>
+<ul>
+<li><strong>Integrity</strong>: FKs + uniqueness (username, email, Aadhaar, PAN, employee code, one loan per application).</li>
+<li><strong>Performance</strong>: FK indexes for every Specification filter; portfolio/dashboard use single JPQL constructor projections (no N+1).</li>
+<li><strong>Schema control</strong>: Flyway <code>V1..V12</code>, <code>ddl-auto: validate</code>, migrations immutable.</li>
+</ul>
+<h3 id="2-7-7-deployment-runtime-topology">2.7.7 Deployment &amp; Runtime Topology</h3>
+<div class="tbl-wrap"><table><tr><th>Concern</th><th>Setting</th></tr><tr><td>API runtime</td><td><code>java -jar target/apsfc-loan-management-1.0.0.jar</code> on <code>:8080</code></td></tr><tr><td>Static hosting</td><td>any static server (dev: <code>python -m http.server 5500</code>) on <code>:5500</code></td></tr><tr><td>Database</td><td>MySQL 8.0.43 / <code>apsfc_lms</code> / user <code>apsfc_user</code></td></tr><tr><td>Docs</td><td>OpenAPI / Swagger UI (<code>/swagger-ui.html</code>), <code>/v3/api-docs</code></td></tr><tr><td>Profiles/secrets</td><td><code>.env</code> (DB creds, JWT secret) — git-ignored</td></tr><tr><td>Logs</td><td>Rolling boot logs (<code>boot*.log</code>)</td></tr></table></div>
+<h3 id="2-7-8-technology-mapping">2.7.8 Technology Mapping</h3>
+<div class="tbl-wrap"><table><tr><th>Concern</th><th>Technology</th><th>Why</th></tr><tr><td>Language</td><td>Java 17 (compiler) / JDK 24</td><td>ecosystem, records, records for DTOs</td></tr><tr><td>Framework</td><td>Spring Boot 3.5.16</td><td>auto-config, Actuator-ready</td></tr><tr><td>Web</td><td>Spring MVC REST + Jackson</td><td>JSON, status codes, validations</td></tr><tr><td>Security</td><td>Spring Security 6 + JJWT (HS512)</td><td>method security, filter chain</td></tr><tr><td>Persistence</td><td>Spring Data JPA 3 / Hibernate</td><td>repository pattern, Specifications</td></tr><tr><td>Database</td><td>MySQL 8.0</td><td>mature, ACID, Flyway support</td></tr><tr><td>Migrations</td><td>Flyway</td><td>versioned, additive, <code>validate</code></td></tr><tr><td>Build</td><td>Maven 3.9 (Lombok annotationProcessorPaths)</td><td>reproducible builds</td></tr><tr><td>Validation</td><td>Jakarta Bean Validation</td><td>400 field-error envelope</td></tr><tr><td>Docs</td><td>springdoc-openapi</td><td>Swagger UI + API discovery</td></tr><tr><td>Frontend</td><td>Vanilla HTML/CSS/JS</td><td>zero deps, static hosting</td></tr><tr><td>Money math</td><td><code>BigDecimal</code> + <code>HALF_EVEN</code></td><td>exact financial precision</td></tr></table></div>
+<h3 id="2-7-9-cross-cutting-concerns">2.7.9 Cross-Cutting Concerns</h3>
+<div class="tbl-wrap"><table><tr><th>Concern</th><th>Implementation</th></tr><tr><td><strong>Transactions</strong></td><td>Service <code>@Transactional</code>; disbursement (loan+schedule+audit) atomic; repayment+auto-close atomic</td></tr><tr><td><strong>Exception contract</strong></td><td>Single <code>@RestControllerAdvice</code> → <code>{timestamp, status, message, errorCode, fieldErrors}</code>; typed exception→code mapping</td></tr><tr><td><strong>Auditing</strong></td><td><code>ApplicationHistory</code> immutable transitions with actor + timestamp</td></tr><tr><td><strong>Pagination/Sorting</strong></td><td><code>PageableUtil</code> sort-whitelist to prevent injection of unknown columns</td></tr><tr><td><strong>DTO mapping</strong></td><td>Constructor-projection records; mapper utilities per module</td></tr><tr><td><strong>Dynamic filters</strong></td><td>Spring Data <code>Specification</code> pattern (applications, loans, customers, employees, repayments)</td></tr><tr><td><strong>Business invariants</strong></td><td><code>ApplicationStateMachine</code> (transition table) + <code>AmortizationScheduleGenerator</code> (money math) as isolated, unit-tested components</td></tr></table></div>
+<h3 id="3-1-requirement-naming-convention">3.1 Requirement Naming Convention</h3>
+<p>Identifiers use <code>FR-<MODULE>-<NNN></code>. Priorities: <strong>M</strong> = Must Have, <strong>S</strong> = Should Have, <strong>C</strong> = Could Have.</p>
+<h3 id="3-2-use-case-diagram">3.2 Use-Case Diagram</h3>
+
+    <div class="uc-wrap">
+        <div class="uc-side"><b>Actors</b><div class="uc-actornode">&#9670; CUSTOMER</div><div class="uc-actornode">&#9670; LOAN_OFFICER</div><div class="uc-actornode">&#9670; MANAGER</div><div class="uc-actornode">&#9670; ADMIN</div></div>
+        <div class="uc-sys">
+            <div class="uc-systitle">Loan Management System</div>
+            
+        <div class="uc-row">
+            <div class="uc-actor">CUSTOMER</div>
+            <div class="uc-pills"><span class="uc-pill">UC1 · Register / Create account</span><span class="uc-pill">UC2 · View loan products</span><span class="uc-pill">UC3 · Apply for a loan</span><span class="uc-pill">UC4 · Manage own applications<br/>(edit / submit / cancel)</span><span class="uc-pill">UC5 · Record repayment</span></div>
+        </div>
+        <div class="uc-row">
+            <div class="uc-actor">LOAN_OFFICER</div>
+            <div class="uc-pills"><span class="uc-pill">UC2 · View loan products</span><span class="uc-pill">UC6 · Review application (start review / recommend)</span><span class="uc-pill">UC9 · Manage customers (status &amp; KYC)</span><span class="uc-pill">UC11 · View dashboard &amp; reports</span></div>
+        </div>
+        <div class="uc-row">
+            <div class="uc-actor">MANAGER</div>
+            <div class="uc-pills"><span class="uc-pill">UC2 · View loan products</span><span class="uc-pill">UC7 · Approve / reject application</span><span class="uc-pill">UC8 · Disburse loan &amp; generate EMI schedule</span><span class="uc-pill">UC9 · Manage customers (status &amp; KYC)</span><span class="uc-pill">UC11 · View dashboard &amp; reports</span></div>
+        </div>
+        <div class="uc-row">
+            <div class="uc-actor">ADMIN</div>
+            <div class="uc-pills"><span class="uc-pill">UC2 · View loan products</span><span class="uc-pill">UC9 · Manage customers (status &amp; KYC)</span><span class="uc-pill">UC10 · Manage employees (provision / update)</span><span class="uc-pill">UC11 · View dashboard &amp; reports</span><span class="uc-pill">UC12 · Manage loan products (create / update)</span></div>
+        </div>
+        </div>
+    </div>
+<h3 id="3-3-use-case-summary-table">3.3 Use-Case Summary Table</h3>
+<div class="tbl-wrap"><table><tr><th>UC</th><th>Use Case</th><th>Primary Actor</th><th>Preconditions</th><th>Postconditions</th></tr><tr><td>UC1</td><td>Authenticate / Create account</td><td>CUST</td><td>None</td><td>JWT issued; User + Customer(KYC) created on register</td></tr><tr><td>UC2</td><td>View loan products</td><td>all</td><td>Authenticated</td><td>Product list rendered</td></tr><tr><td>UC3</td><td>Apply for a loan</td><td>CUST</td><td>Active product(s)</td><td>Application in <code>DRAFT</code></td></tr><tr><td>UC4</td><td>Manage own applications</td><td>CUST</td><td>Own application in <code>DRAFT</code>/<code>SUBMITTED</code></td><td>Draft edited/submitted; submitted or draft cancelled</td></tr><tr><td>UC5</td><td>Record repayment</td><td>CUST, staff</td><td>Loan <code>ACTIVE</code>; next EMI unpaid</td><td>EMI advanced/paid; loan may auto-close</td></tr><tr><td>UC6</td><td>Review application</td><td>OFF</td><td>App status <code>SUBMITTED</code></td><td>Status <code>UNDER_REVIEW</code>; advisory recommendation recorded</td></tr><tr><td>UC7</td><td>Approve / Reject</td><td>MGR</td><td>App <code>UNDER_REVIEW</code></td><td>Status <code>APPROVED</code> or <code>REJECTED</code> + comment/history</td></tr><tr><td>UC8</td><td>Disburse loan</td><td>MGR</td><td>App <code>APPROVED</code></td><td><code>Loan</code> created + full <code>EmiSchedule</code>; app <code>DISBURSED</code></td></tr><tr><td>UC9</td><td>Manage customers</td><td>staff</td><td>—</td><td>Status/KYC updated (MGR/ADM mutations)</td></tr><tr><td>UC10</td><td>Manage employees</td><td>ADM</td><td>—</td><td>Employee account provisioned/updated; status toggled</td></tr><tr><td>UC11</td><td>Dashboard & reports</td><td>staff</td><td>—</td><td>Aggregates returned</td></tr><tr><td>UC12</td><td>Manage products</td><td>ADM</td><td>—</td><td>Product created / updated</td></tr></table></div>
+<h3 id="3-4-detailed-functional-requirements">3.4 Detailed Functional Requirements (Role-Wise)</h3>
+<p>> Access legend: &#10003; = allowed · &mdash; = denied · "own" = own records only</p>
+<h3 id="module-m1-authentication-registration">Module M1 — Authentication &amp; Registration</h3>
+<div class="tbl-wrap"><table><tr><th>ID</th><th>Requirement</th><th>Actor</th><th>Priority</th><th>Description / Acceptance</th></tr><tr><td>FR-AUTH-01</td><td>Self-registration</td><td>CUST</td><td>M</td><td>Create account with username, email, password (8–72 chars, upper+lower+digit+symbol), full name, phone (10–15 digits), Aadhaar (12 digits), PAN (<code>AAAAA9999A</code>), DOB (past). Optional: gender, employment type, address, city, state, pincode. Creates <code>User</code> (role <code>CUSTOMER</code>) + <code>Customer</code> KYC atomically.</td></tr><tr><td>FR-AUTH-02</td><td>Login</td><td>all</td><td>M</td><td>Authenticate by username <strong>or</strong> email + password; issue HS512-signed JWT containing subject + role. Failed login → 401. Inactive/locked account → 401.</td></tr><tr><td>FR-AUTH-03</td><td>Current profile</td><td>all</td><td>M</td><td><code>GET /auth/me</code> returns authenticated user's identity, role, status.</td></tr><tr><td>BR-AUTH-04</td><td>Session/token handling</td><td>all</td><td>M</td><td>Token stored client-side; invalid/expired token → 401; frontend clears session and redirects to login.</td></tr></table></div>
+<h3 id="module-m2-customer-kyc-management">Module M2 — Customer &amp; KYC Management</h3>
+<div class="tbl-wrap"><table><tr><th>ID</th><th>Requirement</th><th>Actor</th><th>Priority</th><th>Description</th></tr><tr><td>FR-KYC-01</td><td>List customers (filters: status, free-text search, KYC-verified)</td><td>OFF, MGR, ADM</td><td>M</td><td>Paginated, sortable (whitelist).</td></tr><tr><td>FR-KYC-02</td><td>Customer detail with active-loan aggregates (count, principal, outstanding)</td><td>staff</td><td>M</td><td>Single query-built response.</td></tr><tr><td>FR-KYC-03</td><td>Verify KYC (idempotent)</td><td>MGR, ADM</td><td>M</td><td>Sets <code>kycVerified = true</code>.</td></tr><tr><td>FR-KYC-04</td><td>Activate / deactivate customer</td><td>MGR, ADM</td><td>M</td><td>Deactivated user cannot log in (401); reactivation allowed.</td></tr><tr><td>FR-KYC-05</td><td>Ownership privacy</td><td>CUST</td><td>M</td><td>Customers cannot view other customers' data.</td></tr></table></div>
+<h3 id="module-m3-loan-products">Module M3 — Loan Products</h3>
+<div class="tbl-wrap"><table><tr><th>ID</th><th>Requirement</th><th>Actor</th><th>Priority</th><th>Description</th></tr><tr><td>FR-PROD-01</td><td>List products (optional status filter)</td><td>all</td><td>M</td><td>Paginated, alphabetical default.</td></tr><tr><td>FR-PROD-02</td><td>Product detail</td><td>all</td><td>M</td><td>—</td></tr><tr><td>FR-PROD-03</td><td>Create product</td><td>ADM</td><td>M</td><td>Name, min/max amount, min/max tenure, interest rate (validated ranges).</td></tr><tr><td>FR-PROD-04</td><td>Update product</td><td>ADM</td><td>S</td><td>Null fields keep existing values (partial update).</td></tr><tr><td>FR-PROD-05</td><td>Application placement validation</td><td>system</td><td>M</td><td>Requested amount & tenure must lie within product range → else 400 <code>PRODUCT_RANGE_EXCEEDED</code> / min/max violations.</td></tr></table></div>
+<h3 id="module-m4-loan-application-workflow">Module M4 — Loan Application Workflow</h3>
+<div class="tbl-wrap"><table><tr><th>ID</th><th>Requirement</th><th>Actor</th><th>Priority</th><th>Description</th></tr><tr><td>FR-APP-01</td><td>Create draft</td><td>CUST</td><td>M</td><td><code>POST /loan-applications</code>; initial status <code>DRAFT</code>; reference <code>APP-yyyyMMdd-<seq></code>.</td></tr><tr><td>FR-APP-02</td><td>Edit draft</td><td>CUST(own)</td><td>M</td><td>Only <code>DRAFT</code>; amount, tenure, product, purpose.</td></tr><tr><td>FR-APP-03</td><td>Submit</td><td>CUST(own)</td><td>M</td><td><code>DRAFT → SUBMITTED</code>; editable no longer.</td></tr><tr><td>FR-APP-04</td><td>Cancel / withdraw</td><td>CUST(own)</td><td>M</td><td><code>DRAFT → CANCELLED</code> or <code>SUBMITTED → CANCELLED</code>.</td></tr><tr><td>FR-APP-05</td><td>View own applications (optionally by status)</td><td>CUST</td><td>M</td><td>Paginated.</td></tr><tr><td>FR-APP-06</td><td>View all applications (filters: status, product, date range)</td><td>staff</td><td>M</td><td>Paginated, sortable.</td></tr><tr><td>FR-APP-07</td><td>Start review</td><td>OFF</td><td>M</td><td><code>SUBMITTED → UNDER_REVIEW</code>.</td></tr><tr><td>FR-APP-08</td><td>Advisory recommend</td><td>OFF</td><td>M</td><td>Record <code>RECOMMENDATION</code> (<code>APPROVE</code>/<code>REJECT</code>) + comment — non-binding.</td></tr><tr><td>FR-APP-09</td><td>Approve</td><td>MGR</td><td>M</td><td><code>UNDER_REVIEW → APPROVED</code> + decision comment.</td></tr><tr><td>FR-APP-10</td><td>Reject</td><td>MGR</td><td>M</td><td><code>UNDER_REVIEW → REJECTED</code> (manager rejection is final).</td></tr><tr><td>FR-APP-11</td><td>Audit history</td><td>owner, staff</td><td>M</td><td>Immutable trail: from→to status, action, actor name, comment, timestamp.</td></tr><tr><td>FR-APP-12</td><td>Ownership enforcement</td><td>system</td><td>M</td><td>Non-owner on <code>/mine</code>, edit, submit, cancel → 403/404; cross-role access denied.</td></tr></table></div>
+<h3 id="module-m5-loan-disbursement-emi-schedule">Module M5 — Loan Disbursement &amp; EMI Schedule</h3>
+<div class="tbl-wrap"><table><tr><th>ID</th><th>Requirement</th><th>Actor</th><th>Priority</th><th>Description</th></tr><tr><td>FR-LOAN-01</td><td>Disburse approved application</td><td>MGR</td><td>M</td><td>Validates <code>APPROVED</code>; optional <code>disbursedAmount</code> ≤ approved & product max; optional date (default today). Creates <code>Loan</code> + full <code>EmiSchedule</code> + audit in one transaction. Reference <code>LN-yyyyMMdd-<seq></code>.</td></tr><tr><td>FR-LOAN-02</td><td>EMI schedule generation</td><td>system</td><td>M</td><td>Monthly amortization from disbursement date (day-clamped); interest = outstanding × monthly rate; exact principal closure on final installment.</td></tr><tr><td>FR-LOAN-03</td><td>View own loans (optional status filter)</td><td>CUST</td><td>M</td><td>Paginated.</td></tr><tr><td>FR-LOAN-04</td><td>View all loans (filters: status, product, date)</td><td>staff</td><td>M</td><td>Paginated.</td></tr><tr><td>FR-LOAN-05</td><td>Loan detail + full EMI schedule</td><td>owner, staff</td><td>M</td><td>Includes disbursed amount, monthly EMI, totals, paid, outstanding, status, disbursed-by.</td></tr><tr><td>FR-LOAN-06</td><td>Atomicity / uniqueness</td><td>system</td><td>M</td><td>No loan without an application; one loan per application (unique constraint); double-disbursement prevented.</td></tr></table></div>
+<h3 id="module-m6-repayments-collections">Module M6 — Repayments &amp; Collections</h3>
+<div class="tbl-wrap"><table><tr><th>ID</th><th>Requirement</th><th>Actor</th><th>Priority</th><th>Description</th></tr><tr><td>FR-REP-01</td><td>Record payment</td><td>CUST(own), staff</td><td>M</td><td>Applies to the <strong>next unpaid</strong> installment only (<code>PENDING</code>/<code>PARTIALLY_PAID</code>, by <code>emiNumber</code>).</td></tr><tr><td>FR-REP-02</td><td>Amount cap</td><td>system</td><td>M</td><td>Payment ≤ remaining due of current EMI; overpayment → 400 <code>INVALID_REPAYMENT</code>.</td></tr><tr><td>FR-REP-03</td><td>Loan auto-close</td><td>system</td><td>M</td><td>When <code>outstandingBalance == 0</code> → <code>Loan.status = CLOSED</code>.</td></tr><tr><td>FR-REP-04</td><td>Closed-loan guard</td><td>system</td><td>M</td><td>Payment on closed loan → 400.</td></tr><tr><td>FR-REP-05</td><td>History per loan</td><td>owner, staff</td><td>M</td><td>Paginated, sorted by payment date; includes mode, reference, recorder, EMI number.</td></tr><tr><td>FR-REP-06</td><td>History across own loans</td><td>CUST</td><td>M</td><td><code>GET /repayments/mine</code>.</td></tr><tr><td>FR-REP-07</td><td>All repayments (filters: loan, date range)</td><td>staff</td><td>M</td><td><code>GET /repayments</code>.</td></tr></table></div>
+<h3 id="module-m7-employee-administration">Module M7 — Employee Administration</h3>
+<div class="tbl-wrap"><table><tr><th>ID</th><th>Requirement</th><th>Actor</th><th>Priority</th><th>Description</th></tr><tr><td>FR-EMP-01</td><td>List employees (filters: role, status, search)</td><td>staff</td><td>M</td><td>Paginated.</td></tr><tr><td>FR-EMP-02</td><td>Employee detail</td><td>staff</td><td>M</td><td>—</td></tr><tr><td>FR-EMP-03</td><td>Provision staff account</td><td>ADM</td><td>M</td><td>Creates <code>User</code> + <code>Employee</code>; role restricted to <code>LOAN_OFFICER</code>/<code>MANAGER</code>; unique <code>employeeCode</code>; password auto-set (enforced policy).</td></tr><tr><td>FR-EMP-04</td><td>Update employee profile</td><td>ADM</td><td>M</td><td>Designation, department, joining date, phone (partial update).</td></tr><tr><td>FR-EMP-05</td><td>Activate / deactivate employee</td><td>ADM</td><td>M</td><td>Immediate login effect.</td></tr></table></div>
+<h3 id="module-m8-dashboard-reports">Module M8 — Dashboard &amp; Reports</h3>
+<div class="tbl-wrap"><table><tr><th>ID</th><th>Requirement</th><th>Actor</th><th>Priority</th><th>Description</th></tr><tr><td>FR-RPT-01</td><td>Dashboard summary</td><td>staff</td><td>M</td><td>Authed users, applications by status, loan counts, outstanding, EMI health (due/overdue/pending), collections (last-30-days by mode).</td></tr><tr><td>FR-RPT-02</td><td>Portfolio by product</td><td>staff</td><td>M</td><td>Disbursed + outstanding per product at a loan status (default <code>ACTIVE</code>).</td></tr><tr><td>FR-RPT-03</td><td>Upcoming EMIs</td><td>staff</td><td>M</td><td>Instalments due within next N days (1–365, default 30).</td></tr><tr><td>FR-RPT-04</td><td>Overdue EMIs</td><td>staff</td><td>M</td><td>Past-due, not fully paid installments.</td></tr><tr><td>FR-RPT-05</td><td>Collections by mode</td><td>staff</td><td>M</td><td>Sum + count by payment mode in a date range (default last 30 days).</td></tr><tr><td>FR-RPT-06</td><td>Query performance</td><td>system</td><td>S</td><td>Aggregations via single JPQL constructor projections; no N+1.</td></tr></table></div>
+<hr class="soft">
+<h2 id="4-use-case-specifications" class="sec">4. Use Case Specifications</h2>
+<h3 id="4-1-uc3-fr-app-01-03-apply-for-a-loan">4.1 UC3 / FR-APP-01…03 — Apply for a Loan</h3>
+<ul>
+<li><strong>Primary actor:</strong> Customer. <strong>Trigger:</strong> Customer selects "Apply".</li>
+<li><strong>Preconditions:</strong> Authenticated; at least one <code>ACTIVE</code> product exists.</li>
+<li><strong>Main flow:</strong></li>
+</ul>
+<p>  1. Customer selects product; system pre-populates admissible range.<br>  2. Customer enters amount, tenure (months), purpose.<br>  3. System validates range against product (<code>BR-03</code>) → computes indicative EMI.<br>  4. System persists <code>LoanApplication</code> (status <code>DRAFT</code>) with reference <code>APP-yyyyMMdd-<seq></code>.<br>  5. Customer may repeat steps 2–4 to amend the draft, then "Submit".<br>  6. System transitions <code>DRAFT → SUBMITTED</code>, records history <code>CREATED→SUBMITTED</code>.</p>
+<ul>
+<li><strong>Alternate flows:</strong> 3a. invalid range → 400; estimation skipped.</li>
+<li><strong>Postconditions:</strong> Application visible in "My applications"; queue visible to staff.</li>
+</ul>
+<h3 id="4-2-uc6-review-application">4.2 UC6 — Review Application (Officer)</h3>
+<ul>
+<li><strong>Primary actor:</strong> Loan Officer.</li>
+<li><strong>Preconditions:</strong> Application status <code>SUBMITTED</code>.</li>
+<li><strong>Main flow:</strong> 1. Officer opens queue filtered by status. 2. Opens application + KYC detail. 3. <code>start-review</code> → <code>UNDER_REVIEW</code>. 4. <code>recommend</code> (advisory <code>APPROVE</code>/<code>REJECT</code> + comment).</li>
+<li><strong>Alternate:</strong> Application not <code>SUBMITTED</code> → 400 <code>BUSINESS_VIOLATION</code> (precondition guard) / 409 state machine.</li>
+<li><strong>Postcondition:</strong> Application awaiting manager decision with an officer recommendation attached.</li>
+</ul>
+<h3 id="4-3-uc7-uc8-approve-reject-disburse">4.3 UC7 / UC8 — Approve, Reject &amp; Disburse (Manager)</h3>
+<ul>
+<li><strong>Preconditions (approve):</strong> <code>UNDER_REVIEW</code>. <strong>(disburse):</strong> <code>APPROVED</code>.</li>
+<li><strong>Approve flow:</strong> comment → <code>UNDER_REVIEW → APPROVED</code>, audited.</li>
+<li><strong>Reject flow:</strong> comment → <code>UNDER_REVIEW → REJECTED</code>, final.</li>
+<li><strong>Disburse flow:</strong></li>
+</ul>
+<p>  1. Manager chooses disbursement date & amount.<br>  2. System computes EMI via <code>AmortizationScheduleGenerator</code> (see BR-04).<br>  3. Loan + all <code>EmiSchedule</code> rows + audit saved atomically; application <code>APPROVED → DISBURSED</code>.<br>  4. Monthly EMI exposed to customer ("My loans").</p>
+<ul>
+<li><strong>Alternate:</strong> 2a. disburse on non-<code>APPROVED</code> → 400; repeats after disburse → unique-constraint violation → 400.</li>
+</ul>
+<h3 id="4-4-uc5-record-repayment">4.4 UC5 — Record Repayment</h3>
+<ul>
+<li><strong>Actors:</strong> Customer (own loan) or staff (any).</li>
+<li><strong>Preconditions:</strong> Loan <code>ACTIVE</code>; current EMI unpaid.</li>
+<li><strong>Main flow:</strong></li>
+</ul>
+<p>  1. Record amount, mode (<code>CASH|UPI|NEFT|IMPS|RTGS|CHEQUE</code>), optional reference/remarks.<br>  2. If amount == remaining due → EMI <code>PAID</code>; else (<code><</code> remaining) → <code>PARTIALLY_PAID</code>.<br>  3. Loan paid/outstanding updated; if outstanding == 0 → loan <code>CLOSED</code>.</p>
+<ul>
+<li><strong>Alternate:</strong> overpayment → 400 <code>INVALID_REPAYMENT</code>; on closed loan → 400.</li>
+</ul>
+<h3 id="4-5-uc9-uc10-customer-employee-management">4.5 UC9 / UC10 — Customer &amp; Employee Management (Staff)</h3>
+<ul>
+<li><strong>Verify KYC (MGR/ADM):</strong> idempotent flag set; re-run safe.</li>
+<li><strong>Customer status (MGR/ADM):</strong> <code>ACTIVE ⇄ INACTIVE</code>; deactivated login → 401; reverse allowed.</li>
+<li><strong>Provision employee (ADM):</strong> create staff User+Employee; role must be OFF/MGR; unique code; then that account can log in and reach the dashboard.</li>
+</ul>
+<hr class="soft">
+<h2 id="5-non-functional-requirements" class="sec">5. Non-Functional Requirements</h2>
+<div class="tbl-wrap"><table><tr><th>ID</th><th>Category</th><th>Requirement</th></tr><tr><td>NFR-01</td><td><strong>Security</strong></td><td>JWT (HS512, server-side secret); passwords BCrypt-hashed; <code>@EnableMethodSecurity</code>; no secrets in code (<code>.env</code> for DB/JWT).</td></tr><tr><td>NFR-02</td><td><strong>Security – RBAC</strong></td><td>Every state-changing endpoint guarded by <code>@PreAuthorize</code>; read endpoints follow role + ownership policy.</td></tr><tr><td>NFR-03</td><td><strong>Integrity</strong></td><td>All financial writes transactional; repayment + auto-close atomic; disbursement + EMI schedule + audit atomic.</td></tr><tr><td>NFR-04</td><td><strong>Accuracy</strong></td><td>Money: <code>BigDecimal</code>, scale-2 storage, <code>HALF_EVEN</code>; EMI principal must sum exactly to principal (no residual).</td></tr><tr><td>NFR-05</td><td><strong>Auditability</strong></td><td>Every application transition records payer/actor/comment/timestamp; immutable history.</td></tr><tr><td>NFR-06</td><td><strong>Performance</strong></td><td>Core list/detail queries indexed; portfolio/dashboard via JPQL aggregates (no N+1).</td></tr><tr><td>NFR-07</td><td><strong>Reliability</strong></td><td>Schema under Flyway (<code>validate</code>); migrations additive & versioned.</td></tr><tr><td>NFR-08</td><td><strong>Usability</strong></td><td>SPA with per-role navigation; dashboards on staff home; clear inline validation toasts.</td></tr><tr><td>NFR-09</td><td><strong>Maintainability</strong></td><td>Layered REST; record DTOs; single state-machine source of truth; unit tests for money math.</td></tr><tr><td>NFR-10</td><td><strong>Portability</strong></td><td>Runs on any JDK 17+/MySQL host; frontend needs only a static file server.</td></tr><tr><td>NFR-11</td><td><strong>Observability</strong></td><td>Boot/session logs; failed-auth paths return generic 401s.</td></tr></table></div>
+<hr class="soft">
+<h2 id="6-business-rules" class="sec">6. Business Rules</h2>
+<div class="tbl-wrap"><table><tr><th>ID</th><th>Rule</th></tr><tr><td>BR-01</td><td><strong>State machine</strong> — <code>DRAFT → {SUBMITTED, CANCELLED}</code>; <code>SUBMITTED → {UNDER_REVIEW, REJECTED, CANCELLED}</code>; <code>UNDER_REVIEW → {APPROVED, REJECTED}</code>; <code>APPROVED → {DISBURSED}</code>. Everything else → <code>INVALID_STATE_TRANSITION</code> (409).</td></tr><tr><td>BR-02</td><td><strong>Precondition guards run first</strong> — e.g., re-approving an approved app → 400 <code>BUSINESS_VIOLATION</code>; truly illegal enum move → 409.</td></tr><tr><td>BR-03</td><td><strong>Product range</strong> — requested amount/tenure must be within product min/max, else 400.</td></tr><tr><td>BR-04</td><td><strong>EMI formula</strong> — <code>r = annualRate% ÷ 1200</code> (scale 20); <code>EMI = P·r·(1+r)ⁿ ÷ ((1+r)ⁿ − 1)</code> rounded to 2 dp; final installment adjusted to close principal exactly (<code>principalPart = remaining</code>, <code>interestPart = min(interest, remaining)</code>).</td></tr><tr><td>BR-05</td><td><strong>First installment date</strong> — disbursement date (day clamped to month end); subsequent due-date = previous + 1 month.</td></tr><tr><td>BR-06</td><td><strong>Repayment settlement</strong> — always the <strong>next unpaid</strong> EMI in <code>emiNumber</code> order; partial allowed; overpayment rejected; auto-close at zero balance; closed loan rejects further payments.</td></tr><tr><td>BR-07</td><td><strong>Money handling</strong> — <code>DECIMAL(19,2)</code>; storage scale 2 <code>HALF_EVEN</code>; intermediates higher scale.</td></tr><tr><td>BR-08</td><td><strong>Reference numbers</strong> — <code>APP/EMP</code>→ <code>yyyymmdd</code>-padded sequence; loans <code>LN-yyyymmdd-<seq></code>.</td></tr><tr><td>BR-09</td><td><strong>Employee roles</strong> — staff created via admin can only be <code>LOAN_OFFICER</code> or <code>MANAGER</code>.</td></tr><tr><td>BR-10</td><td><strong>Account status</strong> — an <code>INACTIVE</code>/<code>LOCKED</code> user cannot authenticate.</td></tr></table></div>
+<hr class="soft">
+<h2 id="7-data-requirements" class="sec">7. Data Requirements</h2>
+<h3 id="7-1-core-entities">7.1 Core Entities</h3>
+<div class="tbl-wrap"><table><tr><th>Entity</th><th>Key Fields</th></tr><tr><td><code>User</code></td><td><code>id, username, email, passwordHash, fullName, phone, role, status</code></td></tr><tr><td><code>Customer</code></td><td><code>id, user_id, aadhaarNumber, panNumber, dob, gender, employmentType, addressLine1/2, city, state, pincode, kycVerified</code></td></tr><tr><td><code>Employee</code></td><td><code>id, user_id, employeeCode, designation, department, joiningDate</code></td></tr><tr><td><code>LoanProduct</code></td><td><code>id, name, minAmount, maxAmount, minTenure, maxTenure, interestRate, status</code></td></tr><tr><td><code>LoanApplication</code></td><td><code>id, applicationNumber, customer_id, product_id, loanAmount, tenureMonths, purpose, status, reviewedBy, decidedBy</code></td></tr><tr><td><code>ApplicationHistory</code></td><td><code>id, application_id, fromStatus, toStatus, action, comment, performedBy, performedAt</code></td></tr><tr><td><code>Loan</code></td><td><code>id, loanNumber, application_id (unique), customer_id, product_id, principalAmount, interestRate, tenureMonths, monthlyEmi, totalAmount, amountPaid, outstandingBalance, status, closedAt</code></td></tr><tr><td><code>EmiSchedule</code></td><td><code>id, loan_id, emiNumber, dueDate, principalComponent, interestComponent, totalAmount, cumulativePaid, paymentStatus</code></td></tr><tr><td><code>Repayment</code></td><td><code>id, loan_id, emiSchedule_id, amount, paymentMode, transactionRef, remarks, paymentDate, recordedBy</code></td></tr></table></div>
+<h3 id="7-2-enumerations">7.2 Enumerations (Canonical Values)</h3>
+<div class="tbl-wrap"><table><tr><th>Enum</th><th>Values</th></tr><tr><td><code>Role</code></td><td><code>CUSTOMER, LOAN_OFFICER, MANAGER, ADMIN</code></td></tr><tr><td><code>UserStatus</code></td><td><code>ACTIVE, INACTIVE, LOCKED</code></td></tr><tr><td><code>ApplicationStatus</code></td><td><code>DRAFT, SUBMITTED, UNDER_REVIEW, APPROVED, REJECTED, CANCELLED, DISBURSED</code></td></tr><tr><td><code>LoanStatus</code></td><td><code>ACTIVE, CLOSED</code></td></tr><tr><td><code>ProductStatus</code></td><td><code>ACTIVE, INACTIVE</code></td></tr><tr><td><code>PaymentStatus</code></td><td><code>PENDING, PARTIALLY_PAID, PAID</code></td></tr><tr><td><code>PaymentMode</code></td><td><code>CASH, UPI, NEFT, IMPS, RTGS, CHEQUE</code></td></tr><tr><td><code>Recommendation</code></td><td><code>APPROVE, REJECT</code></td></tr><tr><td><code>EmploymentType</code></td><td><code>SALARIED, SELF_EMPLOYED, BUSINESS_OWNER, STUDENT, RETIRED, OTHER</code></td></tr></table></div>
+<h3 id="7-3-data-integrity">7.3 Data Integrity</h3>
+<ul>
+<li>Unique: username, email, customer Aadhaar/PAN, employee code, <code>loan.application_id</code>.</li>
+<li>Foreign keys + supporting indexes for all spec filters (status, created/updated dates, product).</li>
+<li>Referential deletes deliberately restricted (audit/historical data preserved).</li>
+</ul>
+<hr class="soft">
+<h2 id="8-security-role-based-access-control" class="sec">8. Security &amp; Role-Based Access Control</h2>
+<h3 id="8-1-authentication">8.1 Authentication</h3>
+<ul>
+<li>Login by <strong>username or email</strong>; BCrypt verify; issues HS512 JWT (<code>sub</code>, <code>role</code>, expiry).</li>
+<li>Authorization header <code>Bearer <token></code>; per-request filter → <code>SecurityContext</code>.</li>
+</ul>
+<h3 id="8-2-authorization-matrix">8.2 Authorization Matrix (detail of §3.4)</h3>
+<div class="tbl-wrap"><table><tr><th>Capability</th><th>CUST</th><th>OFF</th><th>MGR</th><th>ADM</th></tr><tr><td>Register / login / profile</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr><tr><td>View loan products</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr><tr><td>Create / update products</td><td>&ndash;</td><td>&ndash;</td><td>&ndash;</td><td>&#10003;</td></tr><tr><td>Create / edit / submit / cancel application (own)</td><td>&#10003;</td><td>&ndash;</td><td>&ndash;</td><td>&ndash;</td></tr><tr><td>Start review / recommend</td><td>&ndash;</td><td>&#10003;</td><td>&ndash;</td><td>&ndash;</td></tr><tr><td>Approve / reject</td><td>&ndash;</td><td>&ndash;</td><td>&#10003;</td><td>&ndash;</td></tr><tr><td>Disburse loan</td><td>&ndash;</td><td>&ndash;</td><td>&#10003;</td><td>&ndash;</td></tr><tr><td>View own loans / EMIs / payments</td><td>&#10003;</td><td>&ndash;</td><td>&ndash;</td><td>&ndash;</td></tr><tr><td>Record repayment</td><td>own</td><td>any</td><td>any</td><td>any</td></tr><tr><td>Manage customers (status, KYC)</td><td>&ndash;</td><td>view</td><td>&#10003;</td><td>&#10003;</td></tr><tr><td>Provision / update employees</td><td>&ndash;</td><td>&ndash;</td><td>view</td><td>&#10003;</td></tr><tr><td>Dashboard & reports</td><td>&ndash;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr><tr><td>Application / loan / repayment history (any)</td><td>own</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr></table></div>
+<h3 id="8-3-defense-in-depth">8.3 Defense-in-Depth</h3>
+<ol>
+<li>1</li>
+<li>Service-level <strong>ownership checks</strong> (fine-grained, e.g. "the caller owns this application/loan").</li>
+<li>HTTP semantics: 401 unauthenticated, 403 unauthorized, 400 validation/business, 404 not-owned/absent, 409 illegal transition.</li>
+<li>CLIENT validation mirrors server rules but server remains the source of truth.</li>
+</ol>
+<hr class="soft">
+<h2 id="9-api-requirements" class="sec">9. API Requirements</h2>
+<p>Base: <code>http://localhost:8080/api</code> · Content-Type: <code>application/json</code> · Auth: <code>Authorization: Bearer <jwt></code></p>
+<h3 id="9-1-authentication">9.1 Authentication</h3>
+<div class="tbl-wrap"><table><tr><th>Method</th><th>Endpoint</th><th>Access</th><th>Description</th></tr><tr><td>POST</td><td><code>/auth/register</code></td><td>public</td><td>Customer registration → <code>201</code> + JWT</td></tr><tr><td>POST</td><td><code>/auth/login</code></td><td>public</td><td>Login (username/email) → <code>200</code> + JWT</td></tr><tr><td>GET</td><td><code>/auth/me</code></td><td>authenticated</td><td>Current profile</td></tr></table></div>
+<h3 id="9-2-loan-products">9.2 Loan Products</h3>
+<div class="tbl-wrap"><table><tr><th>Method</th><th>Endpoint</th><th>Access</th><th>Description</th></tr><tr><td>GET</td><td><code>/loan-products</code></td><td>all</td><td>List (paginated, optional <code>status</code>)</td></tr><tr><td>GET</td><td><code>/loan-products/{id}</code></td><td>all</td><td>Detail</td></tr><tr><td>POST</td><td><code>/loan-products</code></td><td>ADM</td><td>Create</td></tr><tr><td>PUT</td><td><code>/loan-products/{id}</code></td><td>ADM</td><td>Partial update</td></tr></table></div>
+<h3 id="9-3-loan-applications">9.3 Loan Applications</h3>
+<div class="tbl-wrap"><table><tr><th>Method</th><th>Endpoint</th><th>Access</th><th>Description</th></tr><tr><td>POST</td><td><code>/loan-applications</code></td><td>CUST</td><td>Create draft</td></tr><tr><td>GET</td><td><code>/loan-applications/mine</code></td><td>CUST</td><td>Own applications</td></tr><tr><td>GET</td><td><code>/loan-applications</code></td><td>staff</td><td>All (status, product, date filters)</td></tr><tr><td>GET</td><td><code>/loan-applications/{id}</code></td><td>owner/staff</td><td>Detail</td></tr><tr><td>PUT</td><td><code>/loan-applications/{id}</code></td><td>CUST</td><td>Edit draft</td></tr><tr><td>POST</td><td><code>/loan-applications/{id}/submit</code></td><td>CUST</td><td>Submit</td></tr><tr><td>POST</td><td><code>/loan-applications/{id}/cancel</code></td><td>CUST</td><td>Cancel</td></tr><tr><td>POST</td><td><code>/loan-applications/{id}/start-review</code></td><td>OFF</td><td>Start review</td></tr><tr><td>POST</td><td><code>/loan-applications/{id}/recommend</code></td><td>OFF</td><td>Advisory recommend</td></tr><tr><td>POST</td><td><code>/loan-applications/{id}/approve</code></td><td>MGR</td><td>Approve</td></tr><tr><td>POST</td><td><code>/loan-applications/{id}/reject</code></td><td>MGR</td><td>Reject</td></tr><tr><td>GET</td><td><code>/loan-applications/{id}/history</code></td><td>owner/staff</td><td>Audit trail</td></tr></table></div>
+<h3 id="9-4-loans">9.4 Loans</h3>
+<div class="tbl-wrap"><table><tr><th>Method</th><th>Endpoint</th><th>Access</th><th>Description</th></tr><tr><td>POST</td><td><code>/loans/disburse/{applicationId}</code></td><td>MGR</td><td>Disburse → loan + EMI schedule</td></tr><tr><td>GET</td><td><code>/loans/mine</code></td><td>CUST</td><td>Own loans</td></tr><tr><td>GET</td><td><code>/loans</code></td><td>staff</td><td>All (filters)</td></tr><tr><td>GET</td><td><code>/loans/{id}</code></td><td>owner/staff</td><td>Detail</td></tr><tr><td>GET</td><td><code>/loans/{id}/emi</code></td><td>owner/staff</td><td>Full EMI schedule</td></tr></table></div>
+<h3 id="9-5-repayments">9.5 Repayments</h3>
+<div class="tbl-wrap"><table><tr><th>Method</th><th>Endpoint</th><th>Access</th><th>Description</th></tr><tr><td>POST</td><td><code>/loans/{loanId}/repayments</code></td><td>CUST(own)/staff</td><td>Record payment</td></tr><tr><td>GET</td><td><code>/loans/{loanId}/repayments</code></td><td>owner/staff</td><td>History for a loan</td></tr><tr><td>GET</td><td><code>/repayments/mine</code></td><td>CUST</td><td>Own history (date filter)</td></tr><tr><td>GET</td><td><code>/repayments</code></td><td>staff</td><td>All (loan, date filters)</td></tr></table></div>
+<h3 id="9-6-dashboard-reports">9.6 Dashboard &amp; Reports (staff only)</h3>
+<div class="tbl-wrap"><table><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr><tr><td>GET</td><td><code>/dashboard/summary</code></td><td>Executive snapshot</td></tr><tr><td>GET</td><td><code>/reports/portfolio-by-product</code></td><td>Disbursed/outstanding per product</td></tr><tr><td>GET</td><td><code>/reports/upcoming-emis?days=N</code></td><td>Due within N days</td></tr><tr><td>GET</td><td><code>/reports/overdue-emis</code></td><td>Past-due installments</td></tr><tr><td>GET</td><td><code>/reports/collections?dateFrom&dateTo</code></td><td>Collections by mode</td></tr></table></div>
+<h3 id="9-7-customers">9.7 Customers (staff only)</h3>
+<div class="tbl-wrap"><table><tr><th>Method</th><th>Endpoint</th><th>Access</th><th>Description</th></tr><tr><td>GET</td><td><code>/customers</code></td><td>staff</td><td>List (status/search/kycVerified)</td></tr><tr><td>GET</td><td><code>/customers/{id}</code></td><td>staff</td><td>Detail + aggregates</td></tr><tr><td>PATCH</td><td><code>/customers/{id}/status</code></td><td>MGR/ADM</td><td>Activate/deactivate</td></tr><tr><td>POST</td><td><code>/customers/{id}/kyc/verify</code></td><td>MGR/ADM</td><td>Verify KYC</td></tr></table></div>
+<h3 id="9-8-employees">9.8 Employees</h3>
+<div class="tbl-wrap"><table><tr><th>Method</th><th>Endpoint</th><th>Access</th><th>Description</th></tr><tr><td>POST</td><td><code>/employees</code></td><td>ADM</td><td>Provision staff</td></tr><tr><td>GET</td><td><code>/employees</code></td><td>staff</td><td>List (role/status/search)</td></tr><tr><td>GET</td><td><code>/employees/{id}</code></td><td>staff</td><td>Detail</td></tr><tr><td>PUT</td><td><code>/employees/{id}</code></td><td>ADM</td><td>Update profile</td></tr><tr><td>PATCH</td><td><code>/employees/{id}/status</code></td><td>ADM</td><td>Activate/deactivate</td></tr></table></div>
+<h3 id="9-9-error-contract">9.9 Error Contract</h3>
+<pre class="code-blk"><span class="code-lang">json</span>
+{ "timestamp": "…", "status": 400, "message": "…", "errorCode": "INVALID_REPAYMENT", "fieldErrors": {} }</pre>
+<p>Error codes used: <code>VALIDATION_ERROR</code>, <code>INVALID_CREDENTIALS</code>, <code>ACCOUNT_INACTIVE</code>, <code>UNAUTHORIZED</code>, <code>FORBIDDEN</code>, <code>NOT_FOUND</code>, <code>INVALID_STATE_TRANSITION</code>, <code>BUSINESS_VIOLATION</code>, <code>INVALID_REPAYMENT</code>, <code>PRODUCT_*</code>, <code>DUPLICATE_RESOURCE</code>.</p>
+<hr class="soft">
+<h2 id="10-frontend-ui-requirements" class="sec">10. Frontend / UI Requirements</h2>
+<h3 id="10-1-structure">10.1 Structure</h3>
+<div class="tbl-wrap"><table><tr><th>Asset</th><th>Responsibility</th></tr><tr><td><code>index.html</code></td><td>Login / registration (tabs, client-side validation, auto-login on register)</td></tr><tr><td><code>app.html</code></td><td>SPA shell — sidebar nav per role, view container, modals, toasts</td></tr><tr><td><code>assets/css/style.css</code></td><td>Design system (cards, stat cards, tables, badges, timeline, modals, toasts)</td></tr><tr><td><code>assets/js/api.js</code></td><td><code>fetch</code> wrapper — token/profile persistence, error-envelope parsing, 401 redirect</td></tr><tr><td><code>assets/js/common.js</code></td><td>Formatting (<code>money</code>, <code>date</code>, <code>pct</code>), <code>badge</code>, <code>escapeHtml</code>, toast, modal, table helpers</td></tr><tr><td><code>assets/js/views.js</code></td><td>Per-route view renderers (home, apply, my-apps, app-detail, app-detail-edit, my-loans, loan-detail, payments, staff-apps, staff-loans, customers, customer, employees, employee-edit, reports, profile)</td></tr><tr><td><code>assets/js/app.js</code></td><td>Hash router, RBAC-aware navigation (buildNav), global actions (submit/cancel/start-review/recommend/decide/disburse/pay/verifyKyc/toggleStatus/employeeCreate/employeeEdit)</td></tr></table></div>
+<h3 id="10-2-page-inventory">10.2 Page Inventory (role-aware)</h3>
+<div class="tbl-wrap"><table><tr><th>Route</th><th>Name</th><th>Visible To</th><th>Components</th></tr><tr><td><code>#/home</code></td><td>Home / Dashboard</td><td>all</td><td>Stats, quick actions, latest lists</td></tr><tr><td><code>#/apply</code></td><td>Apply for Loan</td><td>CUST</td><td>Product select, amount/tenure/purpose + EMI preview</td></tr><tr><td><code>#/my-apps</code></td><td>My Applications</td><td>CUST</td><td>Status-filtered list + create/edit draft</td></tr><tr><td><code>#/app-detail/:id</code></td><td>Application Detail</td><td>owner/staff</td><td>KV panel, status timeline, role-aware action buttons</td></tr><tr><td><code>#/app-detail-edit/:id</code></td><td>Edit Draft</td><td>CUST</td><td>Draft form</td></tr><tr><td><code>#/my-loans</code></td><td>My Loans</td><td>CUST</td><td>Loan list</td></tr><tr><td><code>#/loan-detail/:id</code></td><td>Loan Detail</td><td>owner/staff</td><td>Loan stats, EMI table, payment history, Record payment</td></tr><tr><td><code>#/payments</code></td><td>Payments</td><td>CUST</td><td>Own repayment history</td></tr><tr><td><code>#/staff-apps</code></td><td>Applications Queue</td><td>staff</td><td>Filters + status queue</td></tr><tr><td><code>#/staff-loans</code></td><td>Loans</td><td>staff</td><td>All loans</td></tr><tr><td><code>#/customers</code></td><td>Customers</td><td>staff</td><td>Search/filters, KYC + status actions (role-gated)</td></tr><tr><td><code>#/customer/:id</code></td><td>Customer Profile</td><td>staff</td><td>KYC detail, loans aggregate</td></tr><tr><td><code>#/employees</code></td><td>Employees</td><td>staff</td><td>Directory; provision/update/status (ADM)</td></tr><tr><td><code>#/employee-edit/:id</code></td><td>Employee Edit</td><td>ADM/MGR</td><td>Profile form</td></tr><tr><td><code>#/reports</code></td><td>Reports</td><td>staff</td><td>Portfolio grid, upcoming/overdue EMIs, collections</td></tr><tr><td><code>#/profile</code></td><td>Profile</td><td>all</td><td>Current user + role badge</td></tr></table></div>
+<h3 id="10-3-ui-rules">10.3 UI Rules</h3>
+<ul>
+<li>Navigation is <strong>role-filtered</strong> (<code>NAV[role]</code>); unauthorized routes bounce to Home with a toast.</li>
+<li>Financial values rendered via Indian-locale formatter (<code>₹ 1,97,85.60</code>).</li>
+<li>Status shown as color-coded badges; history as a timeline.</li>
+<li>All mutations confirm via modal/prompt; success/error toasts from the standardized error envelope.</li>
+</ul>
+<hr class="soft">
+<h2 id="11-acceptance-verification" class="sec">11. Acceptance &amp; Verification</h2>
+<div class="tbl-wrap"><table><tr><th>Area</th><th>Evidence</th></tr><tr><td>Build</td><td><code>mvn clean package</code> → BUILD SUCCESS (Java 17 target)</td></tr><tr><td>Unit tests</td><td><code>EmiCalculatorTest</code> (4), <code>AmortizationScheduleGeneratorTest</code> (6) → 10/10 pass</td></tr><tr><td>API smoke</td><td>All 28 endpoints exercised against MySQL — 200s + correct 400/401/403/404/409</td></tr><tr><td>End-to-end</td><td>Draft → submit → officer review → manager approve → disburse → 37 EMI payments → auto-close (balances reconciled exactly)</td></tr><tr><td>RBAC</td><td>Role-violation attempts (wrong-role writes) return 403; own-vs-other ownership enforced</td></tr><tr><td>Frontend</td><td>All 16 views render with no <code>undefined</code>/<code>NaN</code> artifacts vs live API; syntax + inline-script checks pass</td></tr><tr><td>CORS</td><td><code>localhost:5500</code> ↔ <code>localhost:8080</code> verified</td></tr></table></div>
+<hr class="soft">
+<h2 id="12-appendix" class="sec">12. Appendix</h2>
+<h3 id="12-1-seed-accounts">12.1 Seed Accounts</h3>
+<div class="tbl-wrap"><table><tr><th>Role</th><th>Username</th><th>Password</th></tr><tr><td>ADMIN</td><td><code>admin@apsfc.local</code></td><td><code>Admin@123</code></td></tr><tr><td>MANAGER</td><td><code>manager@apsfc.local</code></td><td><code>Manager@123</code></td></tr><tr><td>LOAN_OFFICER</td><td><code>officer@apsfc.local</code></td><td><code>Officer@123</code></td></tr><tr><td>CUSTOMER</td><td><code>amit23</code></td><td><code>Passw0rd!</code></td></tr></table></div>
+<h3 id="12-2-run-commands">12.2 Run Commands</h3>
+<pre class="code-blk"><span class="code-lang">bash</span>
+# Backend (port 8080)
+cd backend &amp;&amp; mvn -q -DskipTests package &amp;&amp; java -jar target/apsfc-loan-management-1.0.0.jar
+
+# Frontend (port 5500)
+cd frontend &amp;&amp; python -m http.server 5500
+# ➜ http://localhost:5500</pre>
+<h3 id="12-3-recovery-backup-upgrade-strategy">12.3 Recovery, Backup &amp; Upgrade Strategy</h3>
+<ul>
+<li>Schema upgrades exclusively via additive Flyway migrations.</li>
+<li>Financial ledger preserved (no hard deletes); audit rows immutable.</li>
+<li><code>.env</code> holds DB credentials + JWT secret (never committed).</li>
+</ul>
+<h3 id="12-4-suggested-extensions">12.4 Suggested Extensions (future releases)</h3>
+<ul>
+<li>Priority-led <strong>penalty/late-fee</strong> engine; EMI rescheduling; part-prepayment</li>
+<li>Document upload (KYC, collateral) with object storage</li>
+<li>Email/SMS notifications on status transitions</li>
+<li>Dashboard drill-down exports (PDF/CSV), paginated report endpoints</li>
+<li>Role hierarchy (MGR inherits OFF views)</li>
+<li>REST → async/BPMN orchestration for high-volume origination</li>
+</ul>
+<hr class="soft">
+<p>*End of SRS — prepared by Senior Software Engineer. This document mirrors the implemented system at <code>F:\APSFC Loan Management</code> (backend + frontend).*</p>
+
+</body>
+</html>

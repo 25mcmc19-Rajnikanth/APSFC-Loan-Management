@@ -1,0 +1,15 @@
+package com.apsfc.loanmanagement.dto.request;
+
+import jakarta.validation.constraints.NotBlank;
+
+/**
+ * Login accepts username or email in the identifier field.
+ */
+public record LoginRequest(
+        @NotBlank(message = "Username or email is required")
+        String identifier,
+
+        @NotBlank(message = "Password is required")
+        String password
+) {
+}

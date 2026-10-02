@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APSFC Loan Management — Sign in</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="auth-body">
+  <div class="auth-shell">
+    <div class="auth-brand">
+      <div class="logo">APSFC</div>
+      <h1>Land Development Bank</h1>
+      <p class="muted">Loan origination · Disbursement · Collections<br>One clean operating system.</p>
+    </div>
+    <div class="auth-card">
+      <div class="tabs">
+        <button id="tab-login" class="tab active" onclick="switchTab('login')">Sign in</button>
+        <button id="tab-register" class="tab" onclick="switchTab('register')">Register</button>
+      </div>
+
+      <!-- LOGIN -->
+      <form id="form-login" class="tab-pane">
+        <label>Username or email</label>
+        <input name="identifier" required placeholder="e.g. amit23">
+        <label>Password</label>
+        <input name="password" type="password" required placeholder="••••••••">
+        <button class="btn btn-primary btn-block" type="submit">Sign in</button>
+        <p class="hint center">Demo accounts<br>
+          customer <b>amit23 / Passw0rd!</b> ·
+          officer <b>officer / Officer@123</b> ·
+          manager <b>manager / Manager@123</b> ·
+          admin <b>admin@apsfc.local / Admin@123</b></p>
+      </form>
+
+      <!-- REGISTER -->
+      <form id="form-register" class="tab-pane" style="display:none">
+        <div class="row2">
+          <div><label>Full name</label><input name="fullName" required></div>
+          <div><label>Username</label><input name="username" required minlength="3"></div>
+        </div>
+        <div class="row2">
+          <div><label>Email</label><input name="email" type="email" required></div>
+          <div><label>Phone</label><input name="phone" required></div>
+        </div>
+        <div class="row2">
+          <div><label>Aadhaar (12 digits)</label><input name="aadhaarNumber" required pattern="[0-9]{12}"></div>
+          <div><label>PAN</label><input name="panNumber" required pattern="[A-Za-z]{5}[0-9]{4}[A-Za-z]"></div>
+        </div>
+        <div class="row2">
+          <div><label>Date of birth</label><input name="dateOfBirth" type="date" required></div>
+          <div><label>Occupation</label>
+            <select name="employmentType">
+              <option value="">Select…</option>
+              <option>SALARIED</option><option>SELF_EMPLOYED</option><option>BUSINESS_OWNER</option>
+              <option>STUDENT</option><option>RETIRED</option><option>OTHER</option>
+            </select>
+          </div>
+        </div>
+        <div class="row2">
+          <div><label>City</label><input name="city"></div>
+          <div><label>State</label><input name="state"></div>
+        </div>
+        <label>Address</label>
+        <input name="addressLine1" placeholder="Line 1">
+        <input name="addressLine2" placeholder="Line 2 (optional)">
+        <label>Pincode</label><input name="pincode" pattern="[0-9]{6}">
+        <label>Password</label>
+        <input name="password" type="password" required placeholder="8+ chars, A-Z a-z 0-9 and a symbol">
+        <button class="btn btn-primary btn-block" type="submit">Create account</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="toasts"></div>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/common.js"></script>
+  <script>
+    function switchTab(t) {
+      document.getElementById('tab-login').classList.toggle('active', t === 'login');
+      document.getElementById('tab-register').classList.toggle('active', t === 'register');
+      document.getElementById('form-login').style.display = t === 'login' ? '' : 'none';
+      document.getElementById('form-register').style.display = t === 'register' ? '' : 'none';
+    }
+
+    document.getElementById('form-login').addEventListener('submit', async e => {
+      e.preventDefault();
+      const f = new FormData(e.target);
+      const btn = e.target.querySelector('button'); btn.disabled = true;
+      try {
+        const r = await ace.post('/auth/login', { identifier: f.get('identifier'), password: f.get('password') });
+        ace.token = r.token;
+        ace.user = { id: r.user.id, username: r.user.username, email: r.user.email,
+          fullName: r.user.fullName, phone: r.user.phone, role: r.user.role, status: r.user.status };
+        location.href = 'app.html#/home';
+      } catch (err) { toast(err.message); btn.disabled = false; }
+    });
+
+    document.getElementById('form-register').addEventListener('submit', async e => {
+      e.preventDefault();
+      const f = new FormData(e.target);
+      const b = Object.fromEntries(f.entries());
+      for (const k of ['employmentType', 'addressLine1', 'addressLine2', 'city', 'state', 'pincode']) {
+        if (!b[k]) { delete b[k]; }
+      }
+      b.email = b.email.toLowerCase();
+      b.panNumber = b.panNumber.toUpperCase();
+      const btn = e.target.querySelector('button'); btn.disabled = true;
+      try {
+        const r = await ace.post('/auth/register', b);
+        ace.token = r.token;
+        ace.user = { id: r.user.id, username: r.user.username, email: r.user.email,
+          fullName: r.user.fullName, phone: r.user.phone, role: r.user.role, status: r.user.status };
+        toast('Account created — welcome!', 'ok');
+        location.href = 'app.html#/home';
+      } catch (err) { toast(err.message); btn.disabled = false; }
+    });
+  </script>
+</body>
+</html>

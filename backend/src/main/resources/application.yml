@@ -1,0 +1,97 @@
+spring:
+  application:
+    name: apsfc-loan-management
+
+  # Load local, git-ignored environment overrides from <backend>/.env if present.
+  # Format: plain KEY=VALUE lines (do not quote values).
+  config:
+    import: optional:file:./.env[.properties]
+
+  datasource:
+#    url: jdbc:postgresql://localhost:5432/apsfc_lms
+#    username: postgres
+#    password: Aa1@1234
+
+    url: jdbc:postgresql://127.0.0.1:5433/neondb?sslmode=disable
+    username: neondb_owner
+    password: npg_3CpceyUS7EYk
+
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      pool-name: ApsfcHikariPool
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          time_zone: UTC
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    validate-on-migrate: true
+
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+server:
+  port: 8080
+  error:
+    include-message: never
+    include-binding-errors: never
+
+app:
+  jwt:
+    # Must be provided via environment / .env. No default secret is committed.
+    secret: ${JWT_SECRET}
+    issuer: apsfc-lms
+    expiration-ms: ${JWT_EXPIRATION_MS:28800000}
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5500,http://127.0.0.1:5500}
+  bootstrap:
+    # Dev-only first-boot accounts. Override via env; WARNING is logged when defaults are used.
+    enabled: true
+    admin:
+      username: admin
+      email: ${ADMIN_EMAIL:admin@apsfc.local}
+      password: ${ADMIN_INITIAL_PASSWORD:Admin@123}
+      full-name: APSFC Administrator
+    manager:
+      username: manager
+      email: ${MANAGER_EMAIL:manager@apsfc.local}
+      password: ${MANAGER_INITIAL_PASSWORD:Manager@123}
+      full-name: Raaj Verma
+      employee-code: APSFC-M001
+      department: Credit
+      designation: Credit Manager
+    officer:
+      username: officer
+      email: ${OFFICER_EMAIL:officer@apsfc.local}
+      password: ${OFFICER_INITIAL_PASSWORD:Officer@123}
+      full-name: Sita Desai
+      employee-code: APSFC-O021
+      department: Credit
+      designation: Loan Officer
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+
+logging:
+  level:
+    root: INFO
+    com.apsfc.loanmanagement: DEBUG
+    org.hibernate.SQL: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n"
